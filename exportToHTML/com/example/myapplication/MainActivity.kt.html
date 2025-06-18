@@ -1,0 +1,132 @@
+<html>
+<head>
+<title>MainActivity.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">myapplication</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">ComponentActivity</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">setContent</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">enableEdgeToEdge</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fillMaxSize</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">padding</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Scaffold</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">viewinterop</span><span class="s2">.</span><span class="s1">AndroidView</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">myapplication</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">theme</span><span class="s2">.</span><span class="s1">MyApplicationTheme</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">firebase</span><span class="s2">.</span><span class="s1">FirebaseApp</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">firebase</span><span class="s2">.</span><span class="s1">firestore</span><span class="s2">.</span><span class="s1">FirebaseFirestore</span>
+<span class="s1">import org</span><span class="s2">.</span><span class="s1">osmdroid</span><span class="s2">.</span><span class="s1">config</span><span class="s2">.</span><span class="s1">Configuration</span>
+<span class="s1">import org</span><span class="s2">.</span><span class="s1">osmdroid</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">GeoPoint</span>
+<span class="s1">import org</span><span class="s2">.</span><span class="s1">osmdroid</span><span class="s2">.</span><span class="s1">views</span><span class="s2">.</span><span class="s1">MapView</span>
+<span class="s1">import org</span><span class="s2">.</span><span class="s1">osmdroid</span><span class="s2">.</span><span class="s1">views</span><span class="s2">.</span><span class="s1">overlay</span><span class="s2">.</span><span class="s1">Marker</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">File</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+
+<span class="s3">// 資料類別，代表一個地點資訊</span>
+<span class="s1">data </span><span class="s0">class </span><span class="s1">MapLocation</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">title: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">lat: Double</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">lon: Double</span>
+<span class="s2">)</span>
+
+<span class="s0">class </span><span class="s1">MainActivity : ComponentActivity</span><span class="s2">() {</span>
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState: Bundle?</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState</span><span class="s2">)</span>
+
+
+        <span class="s1">FirebaseApp</span><span class="s2">.</span><span class="s1">initializeApp</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">db </span><span class="s2">= </span><span class="s1">FirebaseFirestore</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">()</span>
+
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s4">&quot;MainActivity&quot;</span><span class="s2">, </span><span class="s4">&quot;Firebase initialized: </span><span class="s0">${</span><span class="s1">FirebaseApp</span><span class="s2">.</span><span class="s1">getApps</span><span class="s2">(</span><span class="s0">this</span><span class="s2">).</span><span class="s1">isNotEmpty</span><span class="s2">()</span><span class="s0">}</span><span class="s4">&quot;</span><span class="s2">)</span>
+
+        <span class="s3">// 初始化 osmdroid 設定（避免存取權限問題，使用快取資料夾）</span>
+        <span class="s1">Configuration</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">().</span><span class="s1">userAgentValue </span><span class="s2">= </span><span class="s1">packageName</span>
+        <span class="s1">Configuration</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">().</span><span class="s1">osmdroidBasePath </span><span class="s2">= </span><span class="s1">File</span><span class="s2">(</span><span class="s1">cacheDir</span><span class="s2">.</span><span class="s1">absolutePath</span><span class="s2">)</span>
+        <span class="s1">Configuration</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">().</span><span class="s1">osmdroidTileCache </span><span class="s2">= </span><span class="s1">File</span><span class="s2">(</span><span class="s1">cacheDir</span><span class="s2">.</span><span class="s1">absolutePath</span><span class="s2">, </span><span class="s4">&quot;tile&quot;</span><span class="s2">)</span>
+
+        <span class="s1">enableEdgeToEdge</span><span class="s2">()</span>
+
+        <span class="s1">setContent </span><span class="s2">{</span>
+            <span class="s1">MyApplicationTheme </span><span class="s2">{</span>
+                <span class="s0">var </span><span class="s1">locations by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s1">listOf</span><span class="s2">&lt;</span><span class="s1">MapLocation</span><span class="s2">&gt;()) }</span>
+
+                <span class="s3">// 從 Firestore 載入資料</span>
+                <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">Unit</span><span class="s2">) {</span>
+                    <span class="s1">db</span><span class="s2">.</span><span class="s1">collection</span><span class="s2">(</span><span class="s4">&quot;locations&quot;</span><span class="s2">).</span><span class="s1">get</span><span class="s2">()</span>
+                        <span class="s2">.</span><span class="s1">addOnSuccessListener </span><span class="s2">{ </span><span class="s1">result </span><span class="s2">-&gt;</span>
+                            <span class="s0">val </span><span class="s1">fetched </span><span class="s2">= </span><span class="s1">result</span><span class="s2">.</span><span class="s1">mapNotNull </span><span class="s2">{ </span><span class="s1">doc </span><span class="s2">-&gt;</span>
+                                <span class="s0">val </span><span class="s1">lat </span><span class="s2">= </span><span class="s1">doc</span><span class="s2">.</span><span class="s1">getDouble</span><span class="s2">(</span><span class="s4">&quot;lat&quot;</span><span class="s2">)</span>
+                                <span class="s0">val </span><span class="s1">lon </span><span class="s2">= </span><span class="s1">doc</span><span class="s2">.</span><span class="s1">getDouble</span><span class="s2">(</span><span class="s4">&quot;lon&quot;</span><span class="s2">)</span>
+                                <span class="s0">val </span><span class="s1">title </span><span class="s2">= </span><span class="s1">doc</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s4">&quot;title&quot;</span><span class="s2">)</span>
+                                <span class="s0">if </span><span class="s2">(</span><span class="s1">lat </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">lon </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">title </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                                    <span class="s1">MapLocation</span><span class="s2">(</span><span class="s1">title</span><span class="s2">, </span><span class="s1">lat</span><span class="s2">, </span><span class="s1">lon</span><span class="s2">)</span>
+                                <span class="s2">} </span><span class="s0">else null</span>
+                            <span class="s2">}</span>
+                            <span class="s1">locations </span><span class="s2">= </span><span class="s1">fetched</span>
+                        <span class="s2">}</span>
+                <span class="s2">}</span>
+
+                <span class="s1">Scaffold</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">()) { </span><span class="s1">innerPadding </span><span class="s2">-&gt;</span>
+                    <span class="s1">OsmDroidMapView</span><span class="s2">(</span>
+                        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">innerPadding</span><span class="s2">),</span>
+                        <span class="s1">locations </span><span class="s2">= </span><span class="s1">locations</span>
+                    <span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">OsmDroidMapView</span><span class="s2">(</span>
+    <span class="s1">modifier: Modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">,</span>
+    <span class="s1">locations: List</span><span class="s2">&lt;</span><span class="s1">MapLocation</span><span class="s2">&gt;</span>
+<span class="s2">) {</span>
+    <span class="s1">AndroidView</span><span class="s2">(</span>
+        <span class="s1">factory </span><span class="s2">= { </span><span class="s1">context </span><span class="s2">-&gt;</span>
+            <span class="s1">MapView</span><span class="s2">(</span><span class="s1">context</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                <span class="s1">setMultiTouchControls</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+                <span class="s1">controller</span><span class="s2">.</span><span class="s1">setZoom</span><span class="s2">(</span><span class="s5">15.0</span><span class="s2">)</span>
+                <span class="s1">controller</span><span class="s2">.</span><span class="s1">setCenter</span><span class="s2">(</span><span class="s1">GeoPoint</span><span class="s2">(</span><span class="s5">25.033964</span><span class="s2">, </span><span class="s5">121.564468</span><span class="s2">)) </span><span class="s3">// 預設台北101</span>
+            <span class="s2">}</span>
+        <span class="s2">},</span>
+        <span class="s1">update </span><span class="s2">= { </span><span class="s1">mapView </span><span class="s2">-&gt;</span>
+            <span class="s3">// 每次更新先清除舊的 marker</span>
+            <span class="s1">mapView</span><span class="s2">.</span><span class="s1">overlays</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">()</span>
+
+            <span class="s3">// 重新加入所有 marker</span>
+            <span class="s1">locations</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">loc </span><span class="s2">-&gt;</span>
+                <span class="s0">val </span><span class="s1">marker </span><span class="s2">= </span><span class="s1">Marker</span><span class="s2">(</span><span class="s1">mapView</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                    <span class="s1">position </span><span class="s2">= </span><span class="s1">GeoPoint</span><span class="s2">(</span><span class="s1">loc</span><span class="s2">.</span><span class="s1">lat</span><span class="s2">, </span><span class="s1">loc</span><span class="s2">.</span><span class="s1">lon</span><span class="s2">)</span>
+                    <span class="s1">setAnchor</span><span class="s2">(</span><span class="s1">Marker</span><span class="s2">.</span><span class="s1">ANCHOR_CENTER</span><span class="s2">, </span><span class="s1">Marker</span><span class="s2">.</span><span class="s1">ANCHOR_BOTTOM</span><span class="s2">)</span>
+                    <span class="s1">title </span><span class="s2">= </span><span class="s1">loc</span><span class="s2">.</span><span class="s1">title</span>
+                <span class="s2">}</span>
+                <span class="s1">mapView</span><span class="s2">.</span><span class="s1">overlays</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">marker</span><span class="s2">)</span>
+            <span class="s2">}</span>
+
+            <span class="s3">// 刷新地圖畫面</span>
+            <span class="s1">mapView</span><span class="s2">.</span><span class="s1">invalidate</span><span class="s2">()</span>
+        <span class="s2">},</span>
+        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">modifier</span>
+    <span class="s2">)</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
